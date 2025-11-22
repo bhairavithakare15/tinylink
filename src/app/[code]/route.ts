@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+
+// Dynamic route - disable static generation
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 interface RouteParams {
   params: Promise<{ code: string }>;
@@ -14,6 +17,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     if (reservedPaths.includes(code)) {
       return NextResponse.next();
     }
+
+    // Import prisma dynamically to avoid build-time issues
+    const { default: prisma } = await import('@/lib/prisma');
 
     const link = await prisma.link.findUnique({
       where: { code },

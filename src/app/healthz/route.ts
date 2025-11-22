@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+
+// Dynamic route - disable static generation
+export const dynamic = 'force-dynamic';
 
 const startTime = Date.now();
 
 export async function GET() {
   try {
+    const { default: prisma } = await import('@/lib/prisma');
+    
     // Test database connection
     await prisma.$queryRaw`SELECT 1`;
     

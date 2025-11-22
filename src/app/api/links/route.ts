@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
 import { generateCode, isValidUrl, isValidCode } from '@/lib/utils';
+
+// Dynamic route - disable static generation
+export const dynamic = 'force-dynamic';
 
 // GET /api/links - List all links
 export async function GET() {
   try {
+    const { default: prisma } = await import('@/lib/prisma');
+    
     const links = await prisma.link.findMany({
       orderBy: { createdAt: 'desc' },
     });
@@ -21,6 +25,8 @@ export async function GET() {
 // POST /api/links - Create a new link
 export async function POST(request: NextRequest) {
   try {
+    const { default: prisma } = await import('@/lib/prisma');
+    
     const body = await request.json();
     const { url, code: customCode } = body;
 

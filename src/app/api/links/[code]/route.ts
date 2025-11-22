@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+
+// Dynamic route - disable static generation
+export const dynamic = 'force-dynamic';
 
 interface RouteParams {
   params: Promise<{ code: string }>;
@@ -8,6 +10,7 @@ interface RouteParams {
 // GET /api/links/:code - Get stats for a single link
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    const { default: prisma } = await import('@/lib/prisma');
     const { code } = await params;
     
     const link = await prisma.link.findUnique({
@@ -34,6 +37,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 // DELETE /api/links/:code - Delete a link
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    const { default: prisma } = await import('@/lib/prisma');
     const { code } = await params;
 
     const link = await prisma.link.findUnique({
